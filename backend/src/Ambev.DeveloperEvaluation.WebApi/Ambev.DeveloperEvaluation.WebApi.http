@@ -1,0 +1,6 @@
+@Ambev.DeveloperEvaluation.WebApi_HostAddress = http://localhost:8081
+
+GET {{Ambev.DeveloperEvaluation.WebApi_HostAddress}}/users/1
+Accept: application/json
+
+###
