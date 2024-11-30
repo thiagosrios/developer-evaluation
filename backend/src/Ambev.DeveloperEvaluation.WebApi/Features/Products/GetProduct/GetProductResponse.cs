@@ -14,5 +14,10 @@
         /// Product name
         /// </summary>
         public string Name { get; set; } = string.Empty;
+
+        /// <summary>
+        /// Product unit price
+        /// </summary>
+        public decimal UnitPrice { get; set; } = 0;
     }
 }

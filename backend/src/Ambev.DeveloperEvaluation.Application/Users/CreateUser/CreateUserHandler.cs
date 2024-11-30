@@ -52,6 +52,7 @@ public class CreateUserHandler : IRequestHandler<CreateUserCommand, CreateUserRe
 
         var createdUser = await _userRepository.CreateAsync(user, cancellationToken);
         var result = _mapper.Map<CreateUserResult>(createdUser);
+
         return result;
     }
 }

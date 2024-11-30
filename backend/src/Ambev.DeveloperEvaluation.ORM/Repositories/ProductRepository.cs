@@ -41,5 +41,16 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         {
             return await _context.Products.FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
         }
+
+        /// <summary>
+        /// Retrieves a product by their name
+        /// </summary>
+        /// <param name="name">The name of the product</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The product if found, null otherwise</returns>
+        public async Task<Product?> GetByNameAsync(string name, CancellationToken cancellationToken = default)
+        {
+            return await _context.Products.FirstOrDefaultAsync(o => o.Name.Equals(name), cancellationToken);
+        }
     }
 }

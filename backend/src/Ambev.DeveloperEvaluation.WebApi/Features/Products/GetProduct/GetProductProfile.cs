@@ -15,6 +15,8 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProduct
         {
             CreateMap<Guid, GetProductCommand>()
                 .ConstructUsing(id => new GetProductCommand(id));
+
+            CreateMap<GetProductResult, GetProductResponse>();
         }
     }
 }
