@@ -58,8 +58,8 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
             BranchId = branchId;
             CustomerId = customerId;
             Items = items;
-            CreatedAt = DateTime.Now;
-            UpdatedAt = DateTime.Now;
+            CreatedAt = DateTime.UtcNow;
+            UpdatedAt = DateTime.UtcNow;
             Status = SaleStatus.Pending;
         }
 
@@ -95,7 +95,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public void Cancel()
         {
             Status = SaleStatus.Canceled;
-            UpdatedAt = DateTime.Now;
+            UpdatedAt = DateTime.UtcNow;
         }
     }
 }

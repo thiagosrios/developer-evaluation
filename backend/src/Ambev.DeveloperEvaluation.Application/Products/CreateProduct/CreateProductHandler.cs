@@ -27,13 +27,13 @@ namespace Ambev.DeveloperEvaluation.Application.Products.CreateProduct
             if (!validationResult.IsValid)
                 throw new ValidationException(validationResult.Errors);
 
-            var existingUser = await _productRepository.GetByNameAsync(request.Name, cancellationToken);
-            if (existingUser != null)
+            var existingProduct = await _productRepository.GetByNameAsync(request.Name, cancellationToken);
+            if (existingProduct != null)
                 throw new InvalidOperationException($"Product with name {request.Name} already exists");
 
-            var user = _mapper.Map<Product>(request);
-            var createdUser = await _productRepository.CreateAsync(user, cancellationToken);
-            var result = _mapper.Map<CreateProductResult>(createdUser);
+            var product = _mapper.Map<Product>(request);
+            var createdProduct = await _productRepository.CreateAsync(product, cancellationToken);
+            var result = _mapper.Map<CreateProductResult>(createdProduct);
 
             return result;
         }
