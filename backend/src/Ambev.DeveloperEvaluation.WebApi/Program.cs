@@ -54,6 +54,7 @@ public static class Program
 
             var app = builder.Build();
             app.UseMiddleware<ValidationExceptionMiddleware>();
+            app.UseMiddleware<InvalidOperationExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {

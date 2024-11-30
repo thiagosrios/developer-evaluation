@@ -30,6 +30,7 @@ public class UserRepository : IUserRepository
     {
         await _context.Users.AddAsync(user, cancellationToken);
         await _context.SaveChangesAsync(cancellationToken);
+
         return user;
     }
 

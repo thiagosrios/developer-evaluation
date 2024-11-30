@@ -16,7 +16,7 @@ public class EmailValidator : AbstractValidator<string>
             .WithMessage("The provided email address is not valid.");
     }
 
-    private bool BeValidEmail(string email)
+    private static bool BeValidEmail(string email)
     {
         if (string.IsNullOrWhiteSpace(email))
             return false;
