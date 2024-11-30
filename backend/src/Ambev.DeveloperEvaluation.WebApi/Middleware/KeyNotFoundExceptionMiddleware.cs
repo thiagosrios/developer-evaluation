@@ -1,15 +1,14 @@
 ﻿using Ambev.DeveloperEvaluation.Common.Validation;
 using Ambev.DeveloperEvaluation.WebApi.Common;
-using System;
 using System.Text.Json;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Middleware
 {
-    public class InvalidOperationExceptionMiddleware
+    public class KeyNotFoundExceptionMiddleware
     {
         private readonly RequestDelegate _next;
 
-        public InvalidOperationExceptionMiddleware(RequestDelegate next)
+        public KeyNotFoundExceptionMiddleware(RequestDelegate next)
         {
             _next = next;
         }
@@ -20,28 +19,28 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
             {
                 await _next(context);
             }
-            catch (InvalidOperationException ex)
+            catch (KeyNotFoundException ex)
             {
-                await HandleInvalidOperationExceptionAsync(context, ex);
+                await HandleKeyNotFoundExceptionAsync(context, ex);
             }
         }
 
-        private static Task HandleInvalidOperationExceptionAsync(HttpContext context, InvalidOperationException exception)
+        private static Task HandleKeyNotFoundExceptionAsync(HttpContext context, KeyNotFoundException exception)
         {
             context.Response.ContentType = "application/json";
-            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+            context.Response.StatusCode = StatusCodes.Status404NotFound;
 
             var response = new ApiResponse
             {
                 Success = false,
-                Message = "Invalid Operation",
-                Errors = new List<ValidationErrorDetail> 
-                { 
+                Message = exception.Message,
+                Errors = new List<ValidationErrorDetail>
+                {
                     new ValidationErrorDetail()
-                    { 
-                        Error = exception.Message, 
+                    {
+                        Error = exception.Message,
                         Detail = exception.StackTrace ?? string.Empty
-                    } 
+                    }
                 }
             };
 
