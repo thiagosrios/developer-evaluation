@@ -6,5 +6,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Repositories
     {
         Task<Sale> CreateAsync(Sale sale, CancellationToken cancellationToken = default);
         Task<Sale?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<int?> GetLastSaleNumber(CancellationToken cancellationToken = default);
+        Task<IEnumerable<Sale>?> GetByCustomerAndDate(Guid customerId, DateTime referenceDate, CancellationToken cancellationToken = default);
     }
 }

@@ -2,12 +2,9 @@
 using Ambev.DeveloperEvaluation.Domain.Enums;
 using Bogus;
 
-namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities.TestData
+namespace Ambev.DeveloperEvaluation.Integration.Domain.Services.TestData
 {
-    /// <summary>
-    /// Provides methods for generating test data using the Bogus library for the Sale entity
-    /// </summary>
-    public static class SaleTestData
+    public static class SaleServiceTestData
     {
         /// <summary>
         /// Generate a Sale object
@@ -19,6 +16,30 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities.TestData
             sale.Items = GenerateValidListOfItems();
 
             return sale;
+        }
+
+        /// <summary>
+        /// Generate an invalid Sale object
+        /// </summary>
+        /// <returns>A invalid Sale entity with randomly generated data.</returns>
+        public static Sale GenerateInvalidSale()
+        {
+            var sale = GenerateSale();
+            sale.BranchId = Guid.Empty;
+            sale.CustomerId = Guid.Empty;
+            sale.Items = new List<SaleItem>();
+
+            return sale;
+        }
+
+        public static Product GenerateProduct()
+        {
+            Faker<Product> faker = new Faker<Product>()
+                .RuleFor(u => u.Id, f => f.Random.Guid())
+                .RuleFor(u => u.UnitPrice, f => f.Random.Number(1, 100))
+                .RuleFor(u => u.Name, f => f.Random.Word());
+
+            return faker.Generate();
         }
 
         /// <summary>

@@ -41,5 +41,32 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         {
             return await _context.Sales.FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
         }
+
+        /// <summary>
+        /// Retrieves the sales created by a customer on a specific date
+        /// </summary>
+        /// <param name="customerId">The unique identifier of the customer</param>
+        /// <param name="referenceDate">The reference date to filter the list of sales</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>List of sales from a customer</returns>
+        public async Task<IEnumerable<Sale>?> GetByCustomerAndDate(Guid customerId, DateTime referenceDate, CancellationToken cancellationToken = default)
+        {
+            return await _context.Sales
+                .Where(o => o.CustomerId == customerId && o.CreatedAt.Date == referenceDate.Date)
+                .ToListAsync(cancellationToken);
+        }
+
+        /// <summary>
+        /// Retrieves the last sale created on the system and returns the number
+        /// </summary>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The sale number, null otherwise</returns>
+        public async Task<int?> GetLastSaleNumber(CancellationToken cancellationToken = default)
+        {
+            return await _context.Sales
+                .OrderByDescending(x => x.CreatedAt)
+                .Select(x => x.Number)
+                .FirstOrDefaultAsync(cancellationToken);
+        }
     }
 }

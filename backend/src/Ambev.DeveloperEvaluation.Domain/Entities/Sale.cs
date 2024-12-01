@@ -49,7 +49,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// <summary>
         /// Gets the total value of the sale (sum of its products).
         /// </summary>
-        public decimal TotalSaleAmount() => Items.Count > 0 ? Items.Sum(x => x.TotalAmount) : 0;
+        public decimal GetTotalSaleAmount() => Items.Count > 0 ? Items.Sum(x => x.TotalAmount) : 0;
 
         public Sale() { }
 
@@ -70,6 +70,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         {
             var validator = new SaleValidator();
             var result = validator.Validate(this);
+
             return new ValidationResultDetail
             {
                 IsValid = result.IsValid,
@@ -87,6 +88,15 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
                 Number = 1;
 
             Number = currentNumber + 1;
+        }
+
+        /// <summary>
+        /// Approve the Sale after passing the necessary validation rules
+        /// </summary>
+        public void Approve()
+        {
+            Status = SaleStatus.Approved;
+            UpdatedAt = DateTime.UtcNow;
         }
 
         /// <summary>

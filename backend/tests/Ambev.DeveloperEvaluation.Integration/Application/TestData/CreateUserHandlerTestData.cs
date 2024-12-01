@@ -1,8 +1,9 @@
 using Ambev.DeveloperEvaluation.Application.Users.CreateUser;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
 using Bogus;
 
-namespace Ambev.DeveloperEvaluation.Unit.Domain;
+namespace Ambev.DeveloperEvaluation.Integration.Application;
 
 /// <summary>
 /// Provides methods for generating test data using the Bogus library.
@@ -38,5 +39,23 @@ public static class CreateUserHandlerTestData
     public static CreateUserCommand GenerateValidCommand()
     {
         return createUserHandlerFaker.Generate();
+    }
+
+    /// <summary>
+    /// Creates a user object from a command
+    /// </summary>
+    /// <returns>A User entity</returns>
+    public static User CreateUserFromCommand(CreateUserCommand command)
+    {
+        return new User
+        {
+            Id = Guid.NewGuid(),
+            Username = command.Username,
+            Password = command.Password,
+            Email = command.Email,
+            Phone = command.Phone,
+            Status = command.Status,
+            Role = command.Role
+        };
     }
 }

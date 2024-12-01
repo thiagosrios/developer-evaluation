@@ -7,9 +7,24 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
     public class SaleTests
     {
         /// <summary>
+        /// Tests the status when a sales is created
+        /// </summary>
+        [Fact(DisplayName = "Sales status should change to Approved")]
+        public void Given_SaleWhenApproved_Then_StatusShouldBeApproved()
+        {
+            var sale = SaleTestData.GenerateSale();
+
+            sale.Approve();
+
+            Assert.Equal(SaleStatus.Approved, sale.Status);
+            Assert.NotEqual(DateTime.MinValue, sale.UpdatedAt);
+            Assert.NotEqual(sale.CreatedAt, sale.UpdatedAt);
+        }
+
+        /// <summary>
         /// Tests that when a sales is canceled by the Customer
         /// </summary>
-        [Fact(DisplayName = "Sales status should change to Approved to Canceled")]
+        [Fact(DisplayName = "Sales status should change from Approved to Canceled")]
         public void Given_CanceledSale_When_Canceled_Then_StatusShouldBeCanceled()
         {
             var sale = SaleTestData.GenerateSale();
