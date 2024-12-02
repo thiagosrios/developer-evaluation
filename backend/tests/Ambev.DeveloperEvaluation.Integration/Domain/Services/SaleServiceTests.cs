@@ -1,9 +1,7 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
-using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Services;
 using Ambev.DeveloperEvaluation.Integration.Domain.Services.TestData;
-using FluentValidation;
 using NSubstitute;
 using Xunit;
 
@@ -12,73 +10,39 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
     public class SaleServiceTests
     {
         private readonly ISaleRepository _saleRepository;
+        private readonly IBranchRepository _branchRepository;
         private readonly IProductRepository _productRepository;
+        private readonly ICustomerRepository _customerRepository;
         private readonly SaleService _saleService;
 
         public SaleServiceTests()
         {
             _saleRepository = Substitute.For<ISaleRepository>();
+            _branchRepository = Substitute.For<IBranchRepository>();
             _productRepository = Substitute.For<IProductRepository>();
-            _saleService = new SaleService(_saleRepository, _productRepository);
+            _customerRepository = Substitute.For<ICustomerRepository>();
+            _saleService = new SaleService(_saleRepository, _customerRepository, _branchRepository, _productRepository);
         }
 
         /// <summary>
-        /// Tests the creation of a valid sale.
+        /// Tests the return of a sale.
         /// </summary>
-        [Fact(DisplayName = "Given valid sale then should return the sale created")]
-        public async Task Given_ValidSale_Then_ShouldReturnSale()
+        [Fact(DisplayName = "Given a id of a sale then should return the sale complete information")]
+        public async Task Given_SaleId_Then_ShouldReturnSaleCompleteInformation()
         {
             // Given
-            var sale = SaleServiceTestData.GenerateSale();
+            var sale = SaleManagerServiceTestData.GenerateSale();
             _saleRepository.GetLastSaleNumber().Returns(1);
-            _saleRepository.CreateAsync(Arg.Any<Sale>()).Returns(sale);
-            _productRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(SaleServiceTestData.GenerateProduct());
+            _saleRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(sale);
+            _branchRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(new Branch());
+            _customerRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(new Customer());
+            _productRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(SaleManagerServiceTestData.GenerateProduct());
 
             // When
-            var result = await _saleService.CreateSale(sale, CancellationToken.None);
+            var result = await _saleService.GetSale(Guid.NewGuid(), CancellationToken.None);
 
             // Then
             Assert.NotNull(result);
-            Assert.Equal(SaleStatus.Approved, result.Status);
-            Assert.NotEqual(0, result.GetTotalSaleAmount());
-        }
-
-        /// <summary>
-        /// Tests the creation of a sale with invalid data
-        /// </summary>
-        [Fact(DisplayName = "Given invalid sale then should return errors")]
-        public async Task Given_InvalidSale_Then_ShouldThrowErrors()
-        {
-            // Given
-            var sale = SaleServiceTestData.GenerateInvalidSale();
-            _saleRepository.GetLastSaleNumber().Returns(1);
-
-            // When
-            var act = () => _saleService.CreateSale(sale, CancellationToken.None);
-
-            // Then
-            await Assert.ThrowsAsync<ValidationException>(act);
-        }
-
-        /// <summary>
-        /// Tests the update of a existent sale.
-        /// </summary>
-        [Fact(DisplayName = "Given valid updated sale then should return the sale created")]
-        public async Task Given_ValidUpdatedSale_Then_ShouldReturnSale()
-        {
-            // Given
-            var sale = SaleServiceTestData.GenerateSale();
-            sale.Update(new List<SaleItem>(), false);
-            _saleRepository.UpdateAsync(Arg.Any<Sale>()).Returns(sale);
-            _productRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(SaleServiceTestData.GenerateProduct());
-
-            // When
-            var result = await _saleService.UpdateSale(sale, CancellationToken.None);
-
-            // Then
-            Assert.NotNull(result);
-            Assert.Equal(SaleStatus.Approved, result.Status);
-            Assert.NotEqual(0, result.GetTotalSaleAmount());
         }
     }
 }

@@ -4,7 +4,7 @@ using Bogus;
 
 namespace Ambev.DeveloperEvaluation.Integration.Domain.Services.TestData
 {
-    public static class SaleServiceTestData
+    public static class SaleManagerServiceTestData
     {
         /// <summary>
         /// Generate a Sale object

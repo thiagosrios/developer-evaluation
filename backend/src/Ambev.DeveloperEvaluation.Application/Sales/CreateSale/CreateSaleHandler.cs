@@ -8,11 +8,11 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 {
     public class CreateSaleHandler : IRequestHandler<CreateSaleCommand, CreateSaleResult>
     {
-        private readonly ISaleService _saleService;
+        private readonly ISaleManagerService _saleService;
         private readonly IMapper _mapper;
 
         public CreateSaleHandler(
-            ISaleService saleService,
+            ISaleManagerService saleService,
             IMapper mapper)
         {
             _saleService = saleService;

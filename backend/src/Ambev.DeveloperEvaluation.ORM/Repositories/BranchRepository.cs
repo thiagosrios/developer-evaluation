@@ -42,7 +42,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         /// <returns>The branch if found, null otherwise</returns>
         public async Task<Branch?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _context.Branchs.FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+            return await _context.Branchs.FirstOrDefaultAsync(o => o.Id.Equals(id), cancellationToken);
         }
     }
 }

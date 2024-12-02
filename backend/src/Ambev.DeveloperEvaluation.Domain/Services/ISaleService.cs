@@ -1,10 +1,9 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Domain.ValueObjects;
 
 namespace Ambev.DeveloperEvaluation.Domain.Services
 {
     public interface ISaleService
     {
-        Task<Sale> CreateSale(Sale sale, CancellationToken cancellationToken = default);
-        Task<Sale> UpdateSale(Sale sale, CancellationToken cancellationToken = default);
+        Task<SaleData> GetSale(Guid saleId, CancellationToken cancellationToken = default);
     }
 }

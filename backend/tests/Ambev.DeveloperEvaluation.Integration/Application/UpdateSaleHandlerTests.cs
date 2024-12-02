@@ -17,7 +17,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Application
     public class UpdateSaleHandlerTests
     {
         private readonly ISaleRepository _saleRepository;
-        private readonly ISaleService _saleService;
+        private readonly ISaleManagerService _saleService;
         private readonly IMapper _mapper;
         private readonly UpdateSaleHandler _handler;
 
@@ -28,7 +28,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Application
         public UpdateSaleHandlerTests()
         {
             _saleRepository = Substitute.For<ISaleRepository>();
-            _saleService = Substitute.For<ISaleService>();
+            _saleService = Substitute.For<ISaleManagerService>();
             _mapper = Substitute.For<IMapper>();
             _handler = new UpdateSaleHandler(_saleRepository, _saleService, _mapper);
         }
@@ -41,7 +41,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Application
         {
             // Given
             var command = CreateSaleHandlerTestData.CreateValidUpdateCommand();
-            var sale = SaleServiceTestData.GenerateSale();
+            var sale = SaleManagerServiceTestData.GenerateSale();
             _saleService.UpdateSale(Arg.Any<Sale>()).Returns(sale);
             _saleRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(sale);
 

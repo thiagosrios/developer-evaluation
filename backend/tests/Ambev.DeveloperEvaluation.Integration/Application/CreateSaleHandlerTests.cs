@@ -15,7 +15,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Application
     /// </summary>
     public class CreateSaleHandlerTests
     {
-        private readonly ISaleService _saleService;
+        private readonly ISaleManagerService _saleService;
         private readonly IMapper _mapper;
         private readonly CreateSaleHandler _handler;
 
@@ -25,7 +25,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Application
         /// </summary>
         public CreateSaleHandlerTests()
         {
-            _saleService = Substitute.For<ISaleService>();
+            _saleService = Substitute.For<ISaleManagerService>();
             _mapper = Substitute.For<IMapper>();
             _handler = new CreateSaleHandler(_saleService, _mapper);
         }
@@ -38,7 +38,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Application
         {
             // Given
             var command = CreateSaleHandlerTestData.CreateValidCommand();
-            var sale = SaleServiceTestData.GenerateSale();
+            var sale = SaleManagerServiceTestData.GenerateSale();
             _saleService.CreateSale(Arg.Any<Sale>()).Returns(sale);
 
             var result = new CreateSaleResult

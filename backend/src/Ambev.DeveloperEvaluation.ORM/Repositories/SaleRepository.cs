@@ -87,6 +87,19 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
                 .OrderByDescending(x => x.CreatedAt)
                 .Select(x => x.Number)
                 .FirstOrDefaultAsync(cancellationToken);
-        }        
+        }
+
+        /// <summary>
+        /// Retrieves a sale by their unique identifier with thelist of items
+        /// </summary>
+        /// <param name="id">The unique identifier of the sale</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The sale if found, null otherwise</returns>
+        public async Task<Sale?> GetWithItemsByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        {
+            return await _context.Sales
+                .Include(x => x.Items)
+                .FirstOrDefaultAsync(o => o.Id == id, cancellationToken);
+        }
     }
 }
