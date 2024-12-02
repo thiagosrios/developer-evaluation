@@ -25,7 +25,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
         /// <summary>
         /// Tests the creation of a valid sale.
         /// </summary>
-        [Fact(DisplayName = "Given valid sale should return the sale created")]
+        [Fact(DisplayName = "Given valid sale then should return the sale created")]
         public async Task Given_ValidSale_Then_ShouldReturnSale()
         {
             // Given
@@ -46,7 +46,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
         /// <summary>
         /// Tests the creation of a sale with invalid data
         /// </summary>
-        [Fact(DisplayName = "Given invalid sale should return errors")]
+        [Fact(DisplayName = "Given invalid sale then should return errors")]
         public async Task Given_InvalidSale_Then_ShouldThrowErrors()
         {
             // Given
@@ -58,6 +58,27 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
 
             // Then
             await Assert.ThrowsAsync<ValidationException>(act);
+        }
+
+        /// <summary>
+        /// Tests the update of a existent sale.
+        /// </summary>
+        [Fact(DisplayName = "Given valid updated sale then should return the sale created")]
+        public async Task Given_ValidUpdatedSale_Then_ShouldReturnSale()
+        {
+            // Given
+            var sale = SaleServiceTestData.GenerateSale();
+            sale.Update(new List<SaleItem>(), false);
+            _saleRepository.UpdateAsync(Arg.Any<Sale>()).Returns(sale);
+            _productRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(SaleServiceTestData.GenerateProduct());
+
+            // When
+            var result = await _saleService.UpdateSale(sale, CancellationToken.None);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.Equal(SaleStatus.Approved, result.Status);
+            Assert.NotEqual(0, result.GetTotalSaleAmount());
         }
     }
 }

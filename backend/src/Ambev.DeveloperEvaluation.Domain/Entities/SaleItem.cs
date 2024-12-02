@@ -89,6 +89,17 @@
         }
 
         /// <summary>
+        /// Update the quantity and verify the rules for items of the sale, as validate quantities, discounts, etc 
+        /// </summary>
+        public void UpdateQuantity(int quantity, bool canceled)
+        {
+            Quantity = quantity;
+            Canceled = canceled;
+            CalculateDiscount();
+            VerifyAllowedQuantity();
+        }
+
+        /// <summary>
         /// Apply the percentage value based on the product price on the Discount property 
         /// </summary>
         /// <param name="discountPercentage">The percentage to be applied to the price</param>

@@ -2,6 +2,9 @@
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
 {
+    /// <summary>
+    /// Represents the command to create a sale on the database
+    /// </summary>
     public class CreateSaleCommand : IRequest<CreateSaleResult>
     {
         /// <summary>
@@ -18,5 +21,21 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         /// Gets the list of the items on the sale 
         /// </summary>
         public List<CreateSaleItemCommand> Items { get; set; } = new();
+    }
+
+    /// <summary>
+    /// Represent a item of the sale with product and quantity
+    /// </summary>
+    public class CreateSaleItemCommand
+    {
+        /// <summary>
+        /// Id of the product
+        /// </summary>
+        public Guid ProductId { get; set; }
+
+        /// <summary>
+        /// Quantity of the product ordered
+        /// </summary>
+        public int Quantity { get; set; } = 0;
     }
 }

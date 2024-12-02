@@ -64,5 +64,29 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
             Assert.True(result.IsValid);
             Assert.Empty(result.Errors);
         }
+
+        /// <summary>
+        /// Tests the update of the Sale
+        /// </summary>
+        [Fact(DisplayName = "Should allow update sale")]
+        public void Given_ValidSaleData_When_Update_Then_ShouldReturnValidSale()
+        {
+            var sale = SaleTestData.GenerateSale();
+            sale.Update(SaleTestData.GenerateValidListOfItems(), false);
+
+            Assert.NotEqual(SaleStatus.Canceled, sale.Status);
+        }
+
+        /// <summary>
+        /// Tests the cancel of a Sale
+        /// </summary>
+        [Fact(DisplayName = "Cancel a sale should change the status")]
+        public void Given_ValidSaleData_When_Cancel_Then_ShouldChangeTheStatusToCanceled()
+        {
+            var sale = SaleTestData.GenerateSale();
+            sale.Update(SaleTestData.GenerateValidListOfItems(), true);
+
+            Assert.Equal(SaleStatus.Canceled, sale.Status);
+        }
     }
 }

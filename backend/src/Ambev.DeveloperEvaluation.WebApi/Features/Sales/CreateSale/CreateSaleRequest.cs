@@ -17,4 +17,17 @@
         /// </summary>
         public List<CreateSaleItemRequest> Items { get; set; } = new();
     }
+
+    public class CreateSaleItemRequest
+    {
+        /// <summary>
+        /// Id of the product
+        /// </summary>
+        public Guid ProductId { get; set; }
+
+        /// <summary>
+        /// Quantity of the product ordered
+        /// </summary>
+        public int Quantity { get; set; } = 0;
+    }
 }

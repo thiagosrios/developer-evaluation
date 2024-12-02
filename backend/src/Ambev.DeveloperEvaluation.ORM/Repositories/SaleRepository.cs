@@ -32,6 +32,26 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         }
 
         /// <summary>
+        /// Updates a sale in the database
+        /// </summary>
+        /// <param name="sale">The sale to update</param>
+        /// <param name="cancellationToken">Cancellation token</param>
+        /// <returns>The updated sale</returns>
+        public async Task<Sale> UpdateAsync(Sale sale, CancellationToken cancellationToken = default)
+        {
+            _context.Entry(sale).State = EntityState.Modified;
+            foreach (var item in sale.Items)
+            {
+                _context.Entry(item).State = EntityState.Modified;                
+            }
+
+            _context.Sales.Update(sale);
+            await _context.SaveChangesAsync(cancellationToken);
+
+            return sale;
+        }
+
+        /// <summary>
         /// Retrieves a sale by their unique identifier
         /// </summary>
         /// <param name="id">The unique identifier of the sale</param>
@@ -67,6 +87,6 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
                 .OrderByDescending(x => x.CreatedAt)
                 .Select(x => x.Number)
                 .FirstOrDefaultAsync(cancellationToken);
-        }
+        }        
     }
 }

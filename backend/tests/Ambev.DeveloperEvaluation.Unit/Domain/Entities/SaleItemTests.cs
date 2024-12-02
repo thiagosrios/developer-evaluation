@@ -73,5 +73,18 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities
 
             Assert.True(item.HasDiscount);
         }
+
+        /// <summary>
+        /// Tests if the item has the quantity updated and the rules are applied
+        /// </summary>
+        [Fact(DisplayName = "The flag for discount should be true if it has been applied")]
+        public void Given_WhenUpdateQuantity_Then_RulesShouldBeApplied()
+        {
+            var item = SaleTestData.GenerateSaleItem();
+            item.UpdateQuantity(5, false);
+
+            Assert.True(item.HasDiscount);
+            Assert.False(item.Canceled);
+        }
     }
 }

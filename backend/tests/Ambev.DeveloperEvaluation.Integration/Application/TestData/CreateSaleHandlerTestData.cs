@@ -1,4 +1,5 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Sales.CreateSale;
+using Ambev.DeveloperEvaluation.Application.Sales.UpdateSale;
 
 namespace Ambev.DeveloperEvaluation.Integration.Application.TestData
 {
@@ -18,6 +19,32 @@ namespace Ambev.DeveloperEvaluation.Integration.Application.TestData
                         Quantity = 10
                     }
                 }
+            };
+        }
+
+        public static UpdateSaleCommand CreateValidUpdateCommand()
+        {
+            return new UpdateSaleCommand()
+            {
+                SaleId = Guid.NewGuid(),
+                Items = new List<UpdateSaleItemCommand>()
+                {
+                    new UpdateSaleItemCommand()
+                    {
+                        ProductId = Guid.NewGuid(),
+                        Quantity = 10,
+                        Canceled = true
+                    }
+                }
+            };
+        }
+
+        public static UpdateSaleCommand CreateInvalidUpdateCommand()
+        {
+            return new UpdateSaleCommand()
+            {
+                SaleId = Guid.Empty,
+                Items = new List<UpdateSaleItemCommand>()
             };
         }
 

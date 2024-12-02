@@ -105,7 +105,37 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         public void Cancel()
         {
             Status = SaleStatus.Canceled;
+            Items.ForEach(x => 
+            {
+                x.Canceled = true;
+                x.Price = 0;
+            });
+        }
+
+        /// <summary>
+        /// Cancel the Sale changing its Status
+        /// </summary>
+        public void Update(List<SaleItem> itens, bool cancel)
+        {            
             UpdatedAt = DateTime.UtcNow;
+
+            if (cancel)
+                Cancel();            
+            else
+            {
+                Status = SaleStatus.Approved;
+                if (itens != null && itens.Count > 0)
+                {
+                    foreach (var item in Items)
+                    {
+                        var updatedItem = itens.Find(x => x.ProductId == item.ProductId);
+                        if (updatedItem != null)
+                        {
+                            item.UpdateQuantity(updatedItem.Quantity, updatedItem.Canceled);
+                        }
+                    }
+                }
+            }
         }
     }
 }

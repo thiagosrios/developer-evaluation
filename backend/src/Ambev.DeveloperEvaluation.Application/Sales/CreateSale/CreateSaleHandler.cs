@@ -12,10 +12,10 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.CreateSale
         private readonly IMapper _mapper;
 
         public CreateSaleHandler(
-            ISaleService SaleRepository,
+            ISaleService saleService,
             IMapper mapper)
         {
-            _saleService = SaleRepository;
+            _saleService = saleService;
             _mapper = mapper;
         }
 

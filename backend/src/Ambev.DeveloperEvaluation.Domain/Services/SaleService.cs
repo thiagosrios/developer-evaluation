@@ -37,6 +37,19 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             return createdSale;
         }
 
+        public async Task<Sale> UpdateSale(Sale sale, CancellationToken cancellationToken = default)
+        {
+            var validator = new SaleValidator();
+            var validationResult = validator.Validate(sale);
+            if (!validationResult.IsValid)
+                throw new ValidationException(validationResult.Errors);
+
+            await SetItemsPrices(sale, cancellationToken);
+            var updatedSale = await _saleRepository.UpdateAsync(sale, cancellationToken);
+
+            return updatedSale;
+        }
+
         private async Task SetItemsPrices(Sale sale, CancellationToken cancellationToken)
         {
             foreach (var item in sale.Items)
