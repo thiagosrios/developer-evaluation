@@ -43,6 +43,8 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             {
                 var product = await _productRepository.GetByIdAsync(item.ProductId, cancellationToken);
                 item.Price = product is null ? 0 : product.UnitPrice;
+                item.VerifyAllowedQuantity();
+                item.CalculateDiscount();
             }
         }
     }

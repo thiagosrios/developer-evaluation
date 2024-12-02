@@ -36,7 +36,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services.TestData
         {
             Faker<Product> faker = new Faker<Product>()
                 .RuleFor(u => u.Id, f => f.Random.Guid())
-                .RuleFor(u => u.UnitPrice, f => f.Random.Number(1, 100))
+                .RuleFor(u => u.UnitPrice, 10.0m)
                 .RuleFor(u => u.Name, f => f.Random.Word());
 
             return faker.Generate();
@@ -68,8 +68,8 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services.TestData
         /// </summary>
         private static readonly Faker<SaleItem> SaleItemFaker = new Faker<SaleItem>()
             .RuleFor(u => u.ProductId, f => f.Random.Uuid())
-            .RuleFor(u => u.Quantity, f => f.Random.Number(1, 100))
-            .RuleFor(u => u.Price, f => f.Random.Decimal())
-            .RuleFor(u => u.Canceled, f => f.Random.Bool());
+            .RuleFor(u => u.Quantity, f => 4)
+            .RuleFor(u => u.Price, f => 10.0m)
+            .RuleFor(u => u.Canceled, f => false);
     }
 }

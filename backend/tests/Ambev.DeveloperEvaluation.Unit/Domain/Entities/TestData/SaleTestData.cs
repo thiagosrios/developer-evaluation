@@ -21,6 +21,11 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities.TestData
             return sale;
         }
 
+        public static SaleItem GenerateSaleItem()
+        {
+            return SaleItemFaker.Generate();
+        }
+
         /// <summary>
         /// Generate a list of items to be used on SaleFaker
         /// </summary>
@@ -49,6 +54,6 @@ namespace Ambev.DeveloperEvaluation.Unit.Domain.Entities.TestData
             .RuleFor(u => u.ProductId, f => f.Random.Uuid())
             .RuleFor(u => u.Quantity, f => f.Random.Number(1, 100))
             .RuleFor(u => u.Price, f => f.Random.Decimal())
-            .RuleFor(u => u.Canceled, f => f.Random.Bool());
+            .RuleFor(u => u.Canceled, false);
     }
 }
