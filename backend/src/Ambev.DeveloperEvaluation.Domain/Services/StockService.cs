@@ -1,4 +1,6 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.EventBroker;
+using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 
 namespace Ambev.DeveloperEvaluation.Domain.Services
@@ -9,10 +11,15 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
     public class StockService : IStockService
     {
         private readonly IStockRepository _stockRepository;
+        private readonly IEventBroker _eventBroker;
 
-        public StockService(IStockRepository stockRepository)
+        public StockService(
+            IStockRepository stockRepository, 
+            IEventBroker eventBroker)
         {
             _stockRepository = stockRepository;
+            _eventBroker = eventBroker;
+            var subscriber = new SaleCreatedEventSubscriber(_eventBroker);
         }
 
         /// <summary>

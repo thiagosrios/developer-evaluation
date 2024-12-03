@@ -1,4 +1,6 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.EventBroker;
+using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Validation;
 using FluentValidation;
@@ -13,15 +15,18 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
         private readonly ISaleRepository _saleRepository;
         private readonly IProductRepository _productRepository;
         private readonly IStockService _stockService;
+        private readonly IEventBroker _eventBroker;
 
         public SaleManagerService(
             ISaleRepository saleRepository, 
             IProductRepository productRepository,
-            IStockService stockService)
+            IStockService stockService,
+            IEventBroker eventBroker)
         {
             _saleRepository = saleRepository;
             _productRepository = productRepository;
             _stockService = stockService;
+            _eventBroker = eventBroker;
         }
 
         /// <summary>
@@ -45,6 +50,8 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             
             createdSale.Update(updateItens);
             await UpdateSale(createdSale, cancellationToken);
+
+            new Publisher(_eventBroker).PublishMessage(new SaleCreatedEvent(sale, "Sale Created"));
 
             return createdSale;
         }
