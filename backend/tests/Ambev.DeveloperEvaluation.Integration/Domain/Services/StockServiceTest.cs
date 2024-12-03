@@ -35,7 +35,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
                 BranchId = Guid.NewGuid()
             };
 
-            _stockRepository.GetByBranchAndProduct(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(stock);
+            _stockRepository.GetByBranchAndProductAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(stock);
 
             // When
             var result = await _stockService.CheckProductAvailabilty(
@@ -59,7 +59,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
                 BranchId = Guid.NewGuid()
             };
 
-            _stockRepository.GetByBranchAndProduct(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(stock);
+            _stockRepository.GetByBranchAndProductAsync(Arg.Any<Guid>(), Arg.Any<Guid>()).Returns(stock);
 
             // When
             var result = await _stockService.CheckProductAvailabilty(

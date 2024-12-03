@@ -35,7 +35,7 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
                 values: new object[,]
                 {
                     { new Guid("7016b985-ee2e-41be-ab99-84280ec4bf89"), "Client 1", "00011122233" },
-                    { new Guid("58ef212f-7aba-4a5c-9357-674bc0217e78"), "Cliente 2", "44455566677" }
+                    { new Guid("58ef212f-7aba-4a5c-9357-674bc0217e78"), "Client 2", "44455566677" }
                 }
             );
         }

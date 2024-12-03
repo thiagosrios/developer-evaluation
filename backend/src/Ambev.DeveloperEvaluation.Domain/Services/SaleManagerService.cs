@@ -41,6 +41,10 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             await CheckItemsRules(sale, cancellationToken);
 
             var createdSale = await _saleRepository.CreateAsync(sale, cancellationToken);
+            var updateItens = await _stockService.UpdateStockQuantities(createdSale.BranchId, createdSale.Items, cancellationToken);
+            
+            createdSale.Update(updateItens);
+            await UpdateSale(createdSale, cancellationToken);
 
             return createdSale;
         }

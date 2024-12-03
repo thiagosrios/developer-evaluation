@@ -23,5 +23,30 @@
 
             return AvailableQuantity >= requiredQuantity;
         }
+
+        /// <summary>
+        /// Update the quantity of the same product on stock
+        /// </summary>
+        /// <param name="requiredQuantity">Quantity required to be subtracted from the stock</param>
+        /// <returns></returns>
+        public int RemoveQuantityFromStockAndReturnsAvailableValue(int requiredQuantity)
+        {
+            if (requiredQuantity > 0)
+            {
+                if (requiredQuantity <= AvailableQuantity)
+                {
+                    AvailableQuantity -= requiredQuantity;
+                    return requiredQuantity;
+                }
+
+                if (requiredQuantity >= AvailableQuantity)
+                {
+                    AvailableQuantity = 0;
+                    return requiredQuantity - AvailableQuantity;
+                }
+            }
+
+            return 0;
+        }
     }
 }

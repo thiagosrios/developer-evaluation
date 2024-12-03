@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Repositories;
+﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Repositories;
 
 namespace Ambev.DeveloperEvaluation.Domain.Services
 {
@@ -28,12 +29,47 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             Guid branchId, 
             CancellationToken cancellationToken = default)
         {
-            var stockRegistry = await _stockRepository.GetByBranchAndProduct(branchId, productId, cancellationToken);
+            var stockRegistry = await _stockRepository.GetByBranchAndProductAsync(branchId, productId, cancellationToken);
         
             if (stockRegistry == null)
                 return false;
 
             return stockRegistry.CheckAvailabity(requiredQuantity);
+        }
+
+        /// <summary>
+        /// Checks the availabilty of a product on a specific branch
+        /// </summary>
+        /// <param name="branchId">Branch where the products are stocked</param>
+        /// <param name="items">The list of itens that should be updated on the stock</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>The list of itens that should be updated on the sale</returns>
+        public async Task<List<SaleItem>> UpdateStockQuantities(
+            Guid branchId,
+            List<SaleItem> items,
+            CancellationToken cancellationToken = default)
+        {
+            var stock = new List<Stock>();
+
+            foreach (var item in items)
+            {
+                var stockRegistry = await _stockRepository.GetByBranchAndProductAsync(branchId, item.ProductId, cancellationToken);
+                if (stockRegistry != null)
+                {  
+                    var availableValue = stockRegistry.RemoveQuantityFromStockAndReturnsAvailableValue(item.Quantity);
+                    stock.Add(stockRegistry);                    
+
+                    if (availableValue < item.Quantity)
+                    {
+                        item.Quantity = availableValue;
+                        item.StatusMessage = "The quantity of the required item has been subtracted because of the availability";
+                    }
+                }
+            }
+
+            await _stockRepository.UpdateRangeAsync(stock, cancellationToken);
+
+            return items;
         }
     }
 }

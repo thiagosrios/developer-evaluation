@@ -115,7 +115,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// <summary>
         /// Cancel the Sale changing its Status
         /// </summary>
-        public void Update(List<SaleItem> itens, bool cancel)
+        public void Update(List<SaleItem> itens, bool cancel = false)
         {            
             UpdatedAt = DateTime.UtcNow;
 

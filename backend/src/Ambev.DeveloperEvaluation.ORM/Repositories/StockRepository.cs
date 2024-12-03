@@ -27,10 +27,28 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         /// <param name="productId">Identifier of the product</param>
         /// <param name="cancellationToken"></param>
         /// <returns>Stock if exists, null otherwise</returns>
-        public async Task<Stock?> GetByBranchAndProduct(Guid branchId, Guid productId, CancellationToken cancellationToken)
+        public async Task<Stock?> GetByBranchAndProductAsync(Guid branchId, Guid productId, CancellationToken cancellationToken = default)
         {
             return await _context.Stocks
                 .FirstOrDefaultAsync(x => x.BranchId == branchId && x.ProductId == productId);
+        }
+
+        /// <summary>
+        /// Updates the list of stock items 
+        /// </summary>
+        /// <param name="stock">List that will be updated</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns></returns>
+        public async Task UpdateRangeAsync(List<Stock> stock, CancellationToken cancellationToken = default)
+        {
+            if (stock != null && stock.Any())
+            {
+                foreach (var item in stock)
+                    _context.Entry(item).State = EntityState.Modified;
+
+                _context.Stocks.UpdateRange(stock.ToArray());
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

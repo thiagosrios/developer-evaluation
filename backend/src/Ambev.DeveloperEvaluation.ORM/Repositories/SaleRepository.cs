@@ -41,10 +41,8 @@ namespace Ambev.DeveloperEvaluation.ORM.Repositories
         {
             _context.Entry(sale).State = EntityState.Modified;
             foreach (var item in sale.Items)
-            {
                 _context.Entry(item).State = EntityState.Modified;                
-            }
-
+            
             _context.Sales.Update(sale);
             await _context.SaveChangesAsync(cancellationToken);
 
