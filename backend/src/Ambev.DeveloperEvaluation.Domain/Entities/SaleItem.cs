@@ -100,6 +100,15 @@
         }
 
         /// <summary>
+        /// Cancel an item for not following business rules
+        /// </summary>
+        public void Cancel(string message)
+        {
+            Canceled = true;
+            StatusMessage = message;
+        }
+
+        /// <summary>
         /// Apply the percentage value based on the product price on the Discount property 
         /// </summary>
         /// <param name="discountPercentage">The percentage to be applied to the price</param>

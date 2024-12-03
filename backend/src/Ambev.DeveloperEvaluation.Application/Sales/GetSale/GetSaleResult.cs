@@ -1,6 +1,4 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
-using Ambev.DeveloperEvaluation.Domain.Enums;
-using Ambev.DeveloperEvaluation.Domain.ValueObjects;
+﻿using Ambev.DeveloperEvaluation.Domain.ValueObjects;
 
 namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale
 {
@@ -12,14 +10,14 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale
         public int Number { get; set; }
 
         /// <summary>
-        /// Gets the id of the branch where the sale are created
+        /// Gets the name of the branch where the sale are created
         /// </summary>
-        public Branch? Branch { get; set; } = new Branch();
+        public string BranchName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets the id from the customer who created the sale.
+        /// Gets customer name from the customer who created the sale.
         /// </summary>
-        public Customer? Customer { get; set; } = new Customer();
+        public string CustomerName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the list of the items on the sales 
@@ -29,7 +27,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.GetSale
         /// <summary>
         /// Gets status of the sale
         /// </summary>
-        public SaleStatus Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the date and time when the sale was created.

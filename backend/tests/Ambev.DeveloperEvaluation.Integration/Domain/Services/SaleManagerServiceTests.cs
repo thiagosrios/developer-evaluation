@@ -13,26 +13,32 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
     {
         private readonly ISaleRepository _saleRepository;
         private readonly IProductRepository _productRepository;
+        private readonly IStockService _stockService;
         private readonly SaleManagerService _saleService;
 
         public SaleManagerServiceTests()
         {
             _saleRepository = Substitute.For<ISaleRepository>();
             _productRepository = Substitute.For<IProductRepository>();
-            _saleService = new SaleManagerService(_saleRepository, _productRepository);
+            _stockService = Substitute.For<IStockService>();
+            _saleService = new SaleManagerService(_saleRepository, _productRepository, _stockService);
         }
 
         /// <summary>
         /// Tests the creation of a valid sale.
         /// </summary>
         [Fact(DisplayName = "Given valid sale then should return the sale created")]
-        public async Task Given_ValidSale_Then_ShouldReturnSale()
+        public async Task Given_ValidSaleRequest_Then_ShouldReturnTheCreatedSale()
         {
             // Given
             var sale = SaleManagerServiceTestData.GenerateSale();
+            var items = SaleManagerServiceTestData.GenerateValidListOfItems();
+            sale.Items = items;
+
             _saleRepository.GetLastSaleNumber().Returns(1);
             _saleRepository.CreateAsync(Arg.Any<Sale>()).Returns(sale);
             _productRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(SaleManagerServiceTestData.GenerateProduct());
+            _stockService.CheckProductAvailabilty(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<Guid>()).Returns(true);
 
             // When
             var result = await _saleService.CreateSale(sale, CancellationToken.None);
@@ -61,16 +67,21 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
         }
 
         /// <summary>
-        /// Tests the update of a existent sale.
+        /// Tests the update of a existent sale
         /// </summary>
         [Fact(DisplayName = "Given valid updated sale then should return the sale created")]
         public async Task Given_ValidUpdatedSale_Then_ShouldReturnSale()
         {
             // Given
             var sale = SaleManagerServiceTestData.GenerateSale();
-            sale.Update(new List<SaleItem>(), false);
+            var items = SaleManagerServiceTestData.GenerateValidListOfItems();
+            
+            sale.Items = items;
+            sale.Update(items, false);
+
             _saleRepository.UpdateAsync(Arg.Any<Sale>()).Returns(sale);
             _productRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(SaleManagerServiceTestData.GenerateProduct());
+            _stockService.CheckProductAvailabilty(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<Guid>()).Returns(true);
 
             // When
             var result = await _saleService.UpdateSale(sale, CancellationToken.None);
@@ -79,6 +90,30 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
             Assert.NotNull(result);
             Assert.Equal(SaleStatus.Approved, result.Status);
             Assert.NotEqual(0, result.GetTotalSaleAmount());
+        }
+
+        /// <summary>
+        /// Tests the creation of a valid sale with products out of stock
+        /// </summary>
+        [Fact(DisplayName = "Given valid sale when stock is unavailable then should return the sale created")]
+        public async Task Given_ValidSaleRequest_WhenStockIsUnavailable_Then_ShouldCancelTheItems()
+        {
+            // Given
+            var sale = SaleManagerServiceTestData.GenerateSale();
+            var items = SaleManagerServiceTestData.GenerateValidListOfItems();
+            sale.Items = items;
+
+            _saleRepository.GetLastSaleNumber().Returns(1);
+            _saleRepository.CreateAsync(Arg.Any<Sale>()).Returns(sale);
+            _productRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(SaleManagerServiceTestData.GenerateProduct());
+            _stockService.CheckProductAvailabilty(Arg.Any<Guid>(), Arg.Any<int>(), Arg.Any<Guid>()).Returns(false);
+
+            // When
+            var result = await _saleService.CreateSale(sale, CancellationToken.None);
+
+            // Then
+            Assert.NotNull(result);
+            Assert.Equal(0, result.GetTotalSaleAmount());
         }
     }
 }

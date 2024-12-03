@@ -32,8 +32,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
         {
             // Given
             var sale = SaleManagerServiceTestData.GenerateSale();
-            _saleRepository.GetLastSaleNumber().Returns(1);
-            _saleRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(sale);
+            _saleRepository.GetWithItemsByIdAsync(Arg.Any<Guid>()).Returns(sale);
             _branchRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(new Branch());
             _customerRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(new Customer());
             _productRepository.GetByIdAsync(Arg.Any<Guid>()).Returns(SaleManagerServiceTestData.GenerateProduct());

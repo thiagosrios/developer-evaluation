@@ -41,14 +41,11 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             if (sale is null)
                 throw new KeyNotFoundException("Sale not found");
 
-            var saleData = new SaleData();
             var branch = await _branchRepository.GetByIdAsync(sale.BranchId, cancellationToken);
             var customer = await _customerRepository.GetByIdAsync(sale.CustomerId, cancellationToken);
+            
+            var saleData = new SaleData(sale, branch, customer);
             await GetProducts(saleData, sale.Items, cancellationToken);
-
-            saleData.Branch = branch;
-            saleData.Customer = customer;
-            saleData.TotalAmount = sale.GetTotalSaleAmount();
 
             return saleData;
         }
@@ -64,7 +61,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             foreach (var item in items)
             {
                 var product = await _productRepository.GetByIdAsync(item.ProductId, cancellationToken);
-                saleData.Items.Add(new SaleDataItem(item, product));
+                saleData.Items.Add(new SaleDataItem(item, product, item.StatusMessage));
             }
         }
     }

@@ -1,5 +1,4 @@
 ﻿using Ambev.DeveloperEvaluation.Domain.Entities;
-using Ambev.DeveloperEvaluation.Domain.Enums;
 
 namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
 {
@@ -15,14 +14,14 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
         public int Number { get; set; }
 
         /// <summary>
-        /// Gets the id of the branch where the sale are created
+        /// Gets the name of the branch where the sale are created
         /// </summary>
-        public Branch? Branch { get; set; } = new Branch();
+        public string BranchName { get; set; } = string.Empty;
 
         /// <summary>
-        /// Gets the id from the customer who created the sale.
+        /// Gets customer name from the customer who created the sale.
         /// </summary>
-        public Customer? Customer { get; set; } = new Customer();
+        public string CustomerName { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the list of the items on the sales 
@@ -32,7 +31,7 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
         /// <summary>
         /// Gets status of the sale
         /// </summary>
-        public SaleStatus Status { get; set; }
+        public string Status { get; set; } = string.Empty;
 
         /// <summary>
         /// Gets the date and time when the sale was created.
@@ -48,6 +47,23 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
         /// The total value of the sale (sum of its products).
         /// </summary>
         public decimal TotalAmount { get; set; } = 0;
+
+        public SaleData(Sale? sale, Branch? branch, Customer? customer)
+        {
+            if (sale != null)
+            {
+                TotalAmount = sale.GetTotalSaleAmount();
+                CreatedAt = sale.CreatedAt;
+                UpdatedAt = sale.UpdatedAt;
+                Status = sale.Status.ToString();
+            }
+
+            if (branch != null)
+                BranchName = branch.Name;
+            
+            if (customer != null) 
+                CustomerName = customer.Name;
+        }
     }
 
     public class SaleDataItem
@@ -55,7 +71,7 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
         /// <summary>
         /// Product of the sale item
         /// </summary>
-        public Product? Product { get; set; }
+        public string ProductName { get; set; }
 
         /// <summary>
         /// Quantity of the product ordered
@@ -72,9 +88,15 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
         /// </summary>
         public decimal Discount { get; set; } = 0;
 
-        public SaleDataItem(SaleItem item, Product? product)
+        /// <summary>
+        /// Status of the item
+        /// </summary>
+        public string StatusMessage { get; set; }
+
+        public SaleDataItem(SaleItem item, Product? product, string message)
         {
-            Product = product;
+            StatusMessage = message;
+            ProductName = product is null ? string.Empty : product.Name;
             Quantity = item.Quantity;
             Price = item.Price;
             Discount = item.Discount.GetValueOrDefault();
