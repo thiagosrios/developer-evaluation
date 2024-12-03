@@ -1,10 +1,9 @@
 ﻿using Ambev.DeveloperEvaluation.Application.Customers.GetCustomer;
-using Ambev.DeveloperEvaluation.Application.Products.GetProduct;
 using Ambev.DeveloperEvaluation.WebApi.Common;
 using Ambev.DeveloperEvaluation.WebApi.Features.Customers.GetCustomer;
-using Ambev.DeveloperEvaluation.WebApi.Features.Products.GetProduct;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Ambev.DeveloperEvaluation.WebApi.Features.Customers;
@@ -14,6 +13,7 @@ namespace Ambev.DeveloperEvaluation.WebApi.Features.Customers;
 /// </summary>
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class CustomersController : BaseController
 {
     private readonly IMediator _mediator;
@@ -52,11 +52,6 @@ public class CustomersController : BaseController
         var command = _mapper.Map<GetCustomerCommand>(request.Id);
         var response = await _mediator.Send(command, cancellationToken);
 
-        return Ok(new ApiResponseWithData<GetCustomerResponse>
-        {
-            Success = true,
-            Message = "Customer retrieved successfully",
-            Data = _mapper.Map<GetCustomerResponse>(response)
-        });
+        return Ok(_mapper.Map<GetCustomerResponse>(response));
     }
 }

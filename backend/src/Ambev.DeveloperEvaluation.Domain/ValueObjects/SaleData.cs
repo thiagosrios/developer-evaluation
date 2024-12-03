@@ -56,6 +56,7 @@ namespace Ambev.DeveloperEvaluation.Domain.ValueObjects
                 CreatedAt = sale.CreatedAt;
                 UpdatedAt = sale.UpdatedAt;
                 Status = sale.Status.ToString();
+                Number = sale.Number;
             }
 
             if (branch != null)

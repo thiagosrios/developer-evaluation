@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Ambev.DeveloperEvaluation.Common.Security;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -10,6 +11,28 @@ namespace Ambev.DeveloperEvaluation.ORM.Migrations
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            BCryptPasswordHasher passwordHasher = new();
+            var password = passwordHasher.HashPassword("ev@luAt10n");
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Id", "Username", "Password", "Phone", "Email", "Status", "Role", "CreatedAt", "UpdatedAt" },
+                values: new object[,]
+                {
+                    { 
+                        new Guid("697a3028-df43-4917-93a4-209137e37ab8"), 
+                        "Admin",
+                        password, 
+                        "+5511990008000", 
+                        "admin@ambev.com", 
+                        "active",
+                        "admin",
+                        DateTime.UtcNow, 
+                        DateTime.UtcNow 
+                    }
+                }
+            );
+
             migrationBuilder.InsertData(
                 table: "Branchs",
                 columns: new[] { "Id", "Name" },

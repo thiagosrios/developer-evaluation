@@ -8,10 +8,10 @@ namespace Ambev.DeveloperEvaluation.WebApi.Common;
 public class BaseController : ControllerBase
 {
     protected int GetCurrentUserId() =>
-            int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new NullReferenceException());
+        int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new KeyNotFoundException());
 
     protected string GetCurrentUserEmail() =>
-        User.FindFirst(ClaimTypes.Email)?.Value ?? throw new NullReferenceException();
+        User.FindFirst(ClaimTypes.Email)?.Value ?? throw new KeyNotFoundException();
 
     protected IActionResult Ok<T>(T data) =>
             base.Ok(new ApiResponseWithData<T> { Data = data, Success = true });
