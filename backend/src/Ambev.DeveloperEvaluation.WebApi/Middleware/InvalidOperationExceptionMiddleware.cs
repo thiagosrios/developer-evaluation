@@ -28,6 +28,10 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
             {
                 await HandleInvalidOperationExceptionAsync(context, ex);
             }
+            catch (Exception ex)
+            {
+                await HandleInvalidOperationExceptionAsync(context, ex);
+            }
         }
 
         private static Task HandleInvalidOperationExceptionAsync(HttpContext context, InvalidOperationException exception)
@@ -46,6 +50,33 @@ namespace Ambev.DeveloperEvaluation.WebApi.Middleware
                         Error = exception.Message, 
                         Detail = exception.StackTrace ?? string.Empty
                     } 
+                }
+            };
+
+            var jsonOptions = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            return context.Response.WriteAsync(JsonSerializer.Serialize(response, jsonOptions));
+        }
+
+        private static Task HandleInvalidOperationExceptionAsync(HttpContext context, Exception exception)
+        {
+            context.Response.ContentType = "application/json";
+            context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+
+            var response = new ApiResponse
+            {
+                Success = false,
+                Message = "Invalid Operation",
+                Errors = new List<ValidationErrorDetail>
+                {
+                    new ValidationErrorDetail()
+                    {
+                        Error = exception.Message,
+                        Detail = exception.StackTrace ?? string.Empty
+                    }
                 }
             };
 

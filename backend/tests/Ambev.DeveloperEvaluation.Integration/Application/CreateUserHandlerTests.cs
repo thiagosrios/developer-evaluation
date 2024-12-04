@@ -1,7 +1,9 @@
 using Ambev.DeveloperEvaluation.Application.Users.CreateUser;
+using Ambev.DeveloperEvaluation.Common.EventBroker;
 using Ambev.DeveloperEvaluation.Common.Security;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
+using Ambev.DeveloperEvaluation.Domain.Services;
 using AutoMapper;
 using FluentAssertions;
 using NSubstitute;
@@ -14,9 +16,8 @@ namespace Ambev.DeveloperEvaluation.Integration.Application;
 /// </summary>
 public class CreateUserHandlerTests
 {
-    private readonly IUserRepository _userRepository;
+    private readonly IUserService _userService;
     private readonly IMapper _mapper;
-    private readonly IPasswordHasher _passwordHasher;
     private readonly CreateUserHandler _handler;
 
     /// <summary>
@@ -25,10 +26,9 @@ public class CreateUserHandlerTests
     /// </summary>
     public CreateUserHandlerTests()
     {
-        _userRepository = Substitute.For<IUserRepository>();
-        _mapper = Substitute.For<IMapper>();
-        _passwordHasher = Substitute.For<IPasswordHasher>();
-        _handler = new CreateUserHandler(_userRepository, _mapper, _passwordHasher);
+        _userService = Substitute.For<IUserService>();
+        _mapper = Substitute.For<IMapper>();        
+        _handler = new CreateUserHandler(_userService, _mapper);
     }
 
     /// <summary>
@@ -49,8 +49,7 @@ public class CreateUserHandlerTests
         _mapper.Map<User>(command).Returns(user);
         _mapper.Map<CreateUserResult>(user).Returns(result);
 
-        _userRepository.CreateAsync(Arg.Any<User>(), Arg.Any<CancellationToken>()).Returns(user);
-        _passwordHasher.HashPassword(Arg.Any<string>()).Returns("hashedPassword");
+        _userService.CreateUserAsync(Arg.Any<User>(), Arg.Any<CancellationToken>()).Returns(user);
 
         // When
         var createUserResult = await _handler.Handle(command, CancellationToken.None);
@@ -58,7 +57,6 @@ public class CreateUserHandlerTests
         // Then
         createUserResult.Should().NotBeNull();
         createUserResult.Id.Should().Be(user.Id);
-        await _userRepository.Received(1).CreateAsync(Arg.Any<User>(), Arg.Any<CancellationToken>());
     }
 
     /// <summary>
@@ -85,20 +83,17 @@ public class CreateUserHandlerTests
     {
         // Given
         var command = CreateUserHandlerTestData.GenerateValidCommand();
-        var originalPassword = command.Password;
         const string hashedPassword = "h@shedPassw0rd";
         var user = CreateUserHandlerTestData.CreateUserFromCommand(command);
 
         _mapper.Map<User>(command).Returns(user);
-        _userRepository.CreateAsync(Arg.Any<User>(), Arg.Any<CancellationToken>()).Returns(user);
-        _passwordHasher.HashPassword(originalPassword).Returns(hashedPassword);
+        _userService.CreateUserAsync(Arg.Any<User>(), Arg.Any<CancellationToken>()).Returns(user);
 
         // When
         await _handler.Handle(command, CancellationToken.None);
 
         // Then
-        _passwordHasher.Received(1).HashPassword(originalPassword);
-        await _userRepository.Received(1).CreateAsync(
+        await _userService.Received(1).CreateUserAsync(
             Arg.Is<User>(u => u.Password == hashedPassword),
             Arg.Any<CancellationToken>());
     }
@@ -114,8 +109,7 @@ public class CreateUserHandlerTests
         var user = CreateUserHandlerTestData.CreateUserFromCommand(command);
 
         _mapper.Map<User>(command).Returns(user);
-        _userRepository.CreateAsync(Arg.Any<User>(), Arg.Any<CancellationToken>()).Returns(user);
-        _passwordHasher.HashPassword(Arg.Any<string>()).Returns("hashedPassword");
+        _userService.CreateUserAsync(Arg.Any<User>(), Arg.Any<CancellationToken>()).Returns(user);
 
         // When
         await _handler.Handle(command, CancellationToken.None);

@@ -31,7 +31,7 @@ namespace Ambev.DeveloperEvaluation.Application.Sales.UpdateSale
             if (!validationResult.IsValid)
                 throw new ValidationException(validationResult.Errors);
 
-            var sale = await _saleRepository.GetByIdAsync(request.SaleId, cancellationToken);
+            var sale = await _saleRepository.GetWithItemsByIdAsync(request.SaleId, cancellationToken);
 
             if (sale is null)
                 throw new KeyNotFoundException("Sale not found"); 

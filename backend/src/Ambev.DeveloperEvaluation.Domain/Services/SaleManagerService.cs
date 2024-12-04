@@ -1,4 +1,6 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.EventBroker;
+using Ambev.DeveloperEvaluation.Domain.Entities;
+using Ambev.DeveloperEvaluation.Domain.Events;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Validation;
 using FluentValidation;
@@ -6,22 +8,25 @@ using FluentValidation;
 namespace Ambev.DeveloperEvaluation.Domain.Services
 {
     /// <summary>
-    /// Handles the operations of create and update sales
+    /// Handles operations of create and update sales
     /// </summary>
     public class SaleManagerService : ISaleManagerService
     {
         private readonly ISaleRepository _saleRepository;
         private readonly IProductRepository _productRepository;
         private readonly IStockService _stockService;
+        private readonly Publisher _publisher;
 
         public SaleManagerService(
             ISaleRepository saleRepository, 
             IProductRepository productRepository,
-            IStockService stockService)
+            IStockService stockService,
+            IEventBroker eventBroker)
         {
             _saleRepository = saleRepository;
             _productRepository = productRepository;
             _stockService = stockService;
+            _publisher = new Publisher(eventBroker);
         }
 
         /// <summary>
@@ -46,6 +51,8 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             createdSale.Update(updateItens);
             await UpdateSale(createdSale, cancellationToken);
 
+            _publisher.PublishMessage(new SaleCreatedEvent(sale, "Sale Created"));
+
             return createdSale;
         }
 
@@ -60,7 +67,15 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             ValidateSale(sale);
 
             await CheckItemsRules(sale, cancellationToken);
+
+            if (sale.Canceled)
+            {
+                _publisher.PublishMessage(new SaleCanceledEvent(sale, "Sale Canceled"));
+            }
+
             var updatedSale = await _saleRepository.UpdateAsync(sale, cancellationToken);
+
+            _publisher.PublishMessage(new SaleModifiedEvent(sale, "Sale Modified"));
 
             return updatedSale;
         }
@@ -101,6 +116,7 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
                 else
                 {
                     item.Cancel("This item has been canceled because is out of stock in the moment");
+                    _publisher.PublishMessage(new ItemCanceledEvent(item, "Item Canceled"));
                 }
             }
         }
