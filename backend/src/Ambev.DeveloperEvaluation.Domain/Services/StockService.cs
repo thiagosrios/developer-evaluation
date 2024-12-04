@@ -12,14 +12,13 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
     public class StockService : IStockService
     {
         private readonly IStockRepository _stockRepository;
-        protected readonly Subscriber<SaleCreatedEvent> _subscriber;
 
         public StockService(
             IStockRepository stockRepository, 
             IEventBroker eventBroker)
         {
             _stockRepository = stockRepository;
-            _subscriber = new Subscriber<SaleCreatedEvent>(eventBroker);
+            RegistrySubscribers(eventBroker);
         }
 
         /// <summary>
@@ -77,6 +76,13 @@ namespace Ambev.DeveloperEvaluation.Domain.Services
             await _stockRepository.UpdateRangeAsync(stock, cancellationToken);
 
             return items;
+        }
+
+        private void RegistrySubscribers(IEventBroker eventBroker)
+        {
+            _ = new Subscriber<SaleCreatedEvent>(eventBroker);
+            _ = new Subscriber<SaleCanceledEvent>(eventBroker);
+            _ = new Subscriber<SaleModifiedEvent>(eventBroker);
         }
     }
 }

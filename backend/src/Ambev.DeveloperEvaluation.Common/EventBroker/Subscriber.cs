@@ -1,26 +1,25 @@
 ﻿using Ambev.DeveloperEvaluation.Common.EventBroker;
+using System.Text.Json;
 
 namespace Ambev.DeveloperEvaluation.Domain.Events.Subscribers
 {
-    public class Subscriber<TModel>
+    public class Subscriber<EventMessage> where EventMessage : class
     {
         protected readonly IEventBroker _eventBroker;
-        public BaseEvent<TModel>? Event {  get; set; }
 
         public Subscriber(IEventBroker eventBroker)
         {
             _eventBroker = eventBroker;
-            eventBroker.Subscribe<BaseEvent<TModel>>(HandleMessage);
+            eventBroker.Subscribe<EventMessage>(HandleMessage);
         }
 
-        private void HandleMessage(BaseEvent<TModel> systemEvent)
+        private static void HandleMessage(EventMessage systemEvent) 
         {
-            Event = systemEvent;
-            var type = typeof(TModel).Name;
-            var created = systemEvent.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss");
+            string eventMessage = JsonSerializer.Serialize(systemEvent);
+            string date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine($"[EVENT] {created} | {type} | Message received: {systemEvent.Message}");
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"[EVENT] {date} Message received: {eventMessage}");
             Console.ForegroundColor = ConsoleColor.Black;
         }
     }
