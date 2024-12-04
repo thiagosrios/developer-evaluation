@@ -1,14 +1,12 @@
+using Ambev.DeveloperEvaluation.Common.EventBroker;
 using Ambev.DeveloperEvaluation.Domain.Entities;
 
 namespace Ambev.DeveloperEvaluation.Domain.Events
 {
-    public class UserRegisteredEvent
+    public class UserRegisteredEvent : BaseEvent<User>
     {
-        public User User { get; }
-
-        public UserRegisteredEvent(User user)
+        public UserRegisteredEvent(User user, string message) : base(user, message)
         {
-            User = user;
         }
     }
 }

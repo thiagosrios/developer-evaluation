@@ -54,6 +54,8 @@ public static class Program
 
             var app = builder.Build();
             app.UseMiddleware<ValidationExceptionMiddleware>();
+            app.UseMiddleware<InvalidOperationExceptionMiddleware>();
+            app.UseMiddleware<KeyNotFoundExceptionMiddleware>();
 
             if (app.Environment.IsDevelopment())
             {
