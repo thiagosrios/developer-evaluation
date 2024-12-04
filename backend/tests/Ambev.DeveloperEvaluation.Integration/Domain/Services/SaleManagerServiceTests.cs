@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.EventBroker;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Enums;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Services;
@@ -21,7 +22,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
             _saleRepository = Substitute.For<ISaleRepository>();
             _productRepository = Substitute.For<IProductRepository>();
             _stockService = Substitute.For<IStockService>();
-            _saleService = new SaleManagerService(_saleRepository, _productRepository, _stockService);
+            _saleService = new SaleManagerService(_saleRepository, _productRepository, _stockService, Substitute.For<IEventBroker>());
         }
 
         /// <summary>

@@ -51,6 +51,11 @@ namespace Ambev.DeveloperEvaluation.Domain.Entities
         /// </summary>
         public decimal GetTotalSaleAmount() => Items.Count > 0 ? Items.Sum(x => x.TotalAmount) : 0;
 
+        /// <summary>
+        /// Defines if the Sale was canceled
+        /// </summary>
+        public bool Canceled => Status == SaleStatus.Canceled;
+
         public Sale() { }
 
         public Sale(Guid branchId, Guid customerId, List<SaleItem> items)

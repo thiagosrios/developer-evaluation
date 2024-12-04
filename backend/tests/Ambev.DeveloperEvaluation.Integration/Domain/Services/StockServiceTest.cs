@@ -1,4 +1,5 @@
-﻿using Ambev.DeveloperEvaluation.Domain.Entities;
+﻿using Ambev.DeveloperEvaluation.Common.EventBroker;
+using Ambev.DeveloperEvaluation.Domain.Entities;
 using Ambev.DeveloperEvaluation.Domain.Repositories;
 using Ambev.DeveloperEvaluation.Domain.Services;
 using NSubstitute;
@@ -18,7 +19,7 @@ namespace Ambev.DeveloperEvaluation.Integration.Domain.Services
         public StockServiceTest()
         {
             _stockRepository = Substitute.For<IStockRepository>();
-            _stockService = new StockService(_stockRepository);
+            _stockService = new StockService(_stockRepository, Substitute.For<IEventBroker>());
         }
 
         /// <summary>
